@@ -1,26 +1,52 @@
-// ---------------- LANGUAGE ----------------
+// ---------- LANGUAGE ----------
 let currentLanguage = "en";
 
 const text = {
-  en: {title:"Party Games 🎉", charades:"Charades 🎭", spy:"Spy Game 🕵️",
-       imposter:"Imposter Drawing 🎨", mrwhiteTitle:"Mr White 🕵️‍♂️",
-       qsTitle:"Question Spy ❓", psychTitle:"The Psychologist 🧠",
-       newWord:"New word ✨", start:"Start game", tap:"Tap to reveal 👀",
-       discuss:"Game ready! Discuss 😈", spyReveal:"You are the SPY 😳",
-       impReveal:"You are the IMPOSTER 😈", psychReveal:"You are the Psychologist 🧠",
-       minPlayers:"At least 3 players babes 💖"},
+  en: {
+    title: "Party Games 🎉",
+    charades: "Charades 🎭",
+    spy: "Spy Game 🕵️",
+    imposter: "Imposter Drawing 🎨",
+    mrwhiteTitle: "Mr White 🕵️‍♂️",
+    qsTitle: "Question Spy ❓",
+    psychTitle: "The Psychologist 🧠",
 
-  no: {title:"Selskapsspill 🎉", charades:"Charades 🎭", spy:"Spion 🕵️",
-       imposter:"Impostor kunstner 🎨", mrwhiteTitle:"Mr White 🕵️‍♂️",
-       qsTitle:"Spørsmål Spion ❓", psychTitle:"Psykologen 🧠",
-       newWord:"Nytt ord ✨", start:"Start spill", tap:"Trykk for å se 👀",
-       discuss:"Spillet er klart! Diskuter 😈", spyReveal:"Du er SPIONEN 😳",
-       impReveal:"Du er IMPOSTOREN 😈", psychReveal:"Du er PSYKOLOGEN 🧠",
-       minPlayers:"Minst 3 spillere 💕"}
+    newWord: "New word ✨",
+    start: "Start game",
+    players: "Players:",
+    minPlayers: "At least 3 players babes 💖",
+
+    cardHidden: "Tap to reveal 👀",
+    spyReveal: "YOU ARE THE SPY 😳",
+    impReveal: "YOU ARE THE IMPOSTER 😈",
+    psychReveal: "YOU ARE THE PSYCHOLOGIST 🧠",
+    draw: "Draw:"
+  },
+
+  no: {
+    title: "Selskapsspill 🎉",
+    charades: "Charades 🎭",
+    spy: "Spion 🕵️",
+    imposter: "Impostor-tegning 🎨",
+    mrwhiteTitle: "Mr White 🕵️‍♂️",
+    qsTitle: "Spørsmålsspion ❓",
+    psychTitle: "Psykologen 🧠",
+
+    newWord: "Nytt ord ✨",
+    start: "Start spill",
+    players: "Spillere:",
+    minPlayers: "Minst 3 spillere babes 💕",
+
+    cardHidden: "Trykk for å se 👀",
+    spyReveal: "DU ER SPIONEN 😳",
+    impReveal: "DU ER IMPOSTOREN 😈",
+    psychReveal: "DU ER PSYKOLOGEN 🧠",
+    draw: "Tegn:"
+  }
 };
 
-function setLanguage(lang){
-  currentLanguage = lang; 
+function setLanguage(lang) {
+  currentLanguage = lang;
   localStorage.setItem("lang", lang);
 
   document.getElementById("title").textContent = text[lang].title;
@@ -32,123 +58,173 @@ function setLanguage(lang){
   document.getElementById("psychTitle").textContent = text[lang].psychTitle;
 
   document.getElementById("charadesBtn").textContent = text[lang].newWord;
-  document.getElementById("spyStartBtn").textContent = text[lang].start;
-  document.getElementById("impStartBtn").textContent = text[lang].start;
-  document.getElementById("mwStartBtn").textContent = text[lang].start;
-  document.getElementById("qsStartBtn").textContent = text[lang].start;
-  document.getElementById("psychStartBtn").textContent = text[lang].start;
+  document.querySelectorAll("[id$='StartBtn']").forEach(btn => {
+    btn.textContent = text[lang].start;
+  });
 }
 
 const savedLang = localStorage.getItem("lang");
-if(savedLang) setLanguage(savedLang);
-else setLanguage("en");
+setLanguage(savedLang || "en");
 
-// ---------------- GENERAL ----------------
-function showGame(id){
+// ---------- GENERAL ----------
+function showGame(id) {
   document.querySelectorAll(".game").forEach(g => g.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
 
-// ---------------- CHARADES ----------------
-const charadesWords = {
-  en:["Brushing teeth","Dancing","Swimming","Cat stuck in a tree"],
-  no:["Pusse tenner","Danse","Svømming","Katt i et tre"]
-};
-function newCharadesWord(){
-  const word = charadesWords[currentLanguage][Math.floor(Math.random()*charadesWords[currentLanguage].length)];
-  document.getElementById("charadesWord").textContent = word;
-}
-
-// ---------------- HELPER FUNCTION FOR CARDS ----------------
-function createCards(containerId, players, words, oddPlayerIndex = -1, oddWord = ""){
+function createCards(containerId, players, getContent) {
   const container = document.getElementById(containerId);
-  container.innerHTML = ""; // clear old cards
-  for(let i=0;i<players;i++){
+  container.innerHTML = "";
+
+  for (let i = 0; i < players; i++) {
     const card = document.createElement("div");
     card.className = "card";
-    card.textContent = `Player ${i+1}`;
+    card.textContent = `Player ${i + 1}`;
+
     let revealed = false;
-    card.addEventListener("click", () => {
-      if(!revealed){
-        if(i === oddPlayerIndex) card.textContent = oddWord;
-        else card.textContent = words[i];
+
+    card.onclick = () => {
+      if (!revealed) {
+        card.textContent = getContent(i);
         revealed = true;
       } else {
-        card.textContent = `Player ${i+1}`;
+        card.textContent = `Player ${i + 1}`;
         revealed = false;
       }
-    });
+    };
+
     container.appendChild(card);
   }
 }
 
-// ---------------- SPY ----------------
+// ---------- CHARADES ----------
+const charadesWords = {
+  en: ["Brushing teeth", "Dancing", "Harry Potter", "Swimming", "Cat stuck in a tree"],
+  no: ["Pusse tennene", "Danse", "Harry Potter", "Svømming", "Katt fast i et tre"]
+};
+
+function newCharadesWord() {
+  const words = charadesWords[currentLanguage];
+  const word = words[Math.floor(Math.random() * words.length)];
+  document.getElementById("charadesWord").textContent = word;
+}
+
+// ---------- SPY ----------
 const spyLocations = {
-  en:["Beach 🏖️","School 🏫","Airport ✈️","Hospital 🏥","Restaurant 🍝"],
-  no:["Strand 🏖️","Skole 🏫","Flyplass ✈️","Sykehus 🏥","Restaurant 🍝"]
+  en: ["Beach 🏖️", "School 🏫", "Airport ✈️", "Hospital 🏥", "Restaurant 🍝"],
+  no: ["Strand 🏖️", "Skole 🏫", "Flyplass ✈️", "Sykehus 🏥", "Restaurant 🍝"]
 };
-document.getElementById("spyStartBtn").addEventListener("click", () => {
+
+document.getElementById("spyStartBtn").onclick = () => {
   const players = Number(document.getElementById("spyPlayers").value);
-  if(!players || players<3){alert(text[currentLanguage].minPlayers); return;}
-  const oddPlayer = Math.floor(Math.random()*players);
-  const word = spyLocations[currentLanguage][Math.floor(Math.random()*spyLocations[currentLanguage].length)];
-  const words = Array(players).fill(word);
-  createCards("spyCards", players, words, oddPlayer, text[currentLanguage].spyReveal);
-});
+  if (players < 3) return alert(text[currentLanguage].minPlayers);
 
-// ---------------- IMPOSTER ----------------
+  const spy = Math.floor(Math.random() * players);
+  const location =
+    spyLocations[currentLanguage][
+      Math.floor(Math.random() * spyLocations[currentLanguage].length)
+    ];
+
+  createCards("spyCards", players, i =>
+    i === spy ? text[currentLanguage].spyReveal : location
+  );
+};
+
+// ---------- IMPOSTER ----------
 const drawingPrompts = {
-  en:["Cat 🐱","House 🏠","Flower 🌸","Tree 🌳"],
-  no:["Katt 🐱","Hus 🏠","Blomst 🌸","Tre 🌳"]
+  en: ["Cat 🐱", "House 🏠", "Flower 🌸", "Tree 🌳", "Sunglasses 😎"],
+  no: ["Katt 🐱", "Hus 🏠", "Blomst 🌸", "Tre 🌳", "Solbriller 😎"]
 };
-document.getElementById("impStartBtn").addEventListener("click", () => {
+
+document.getElementById("impStartBtn").onclick = () => {
   const players = Number(document.getElementById("impPlayers").value);
-  if(!players || players<3){alert(text[currentLanguage].minPlayers); return;}
-  const oddPlayer = Math.floor(Math.random()*players);
-  const word = drawingPrompts[currentLanguage][Math.floor(Math.random()*drawingPrompts[currentLanguage].length)];
-  const words = Array(players).fill(`Draw: ${word}`);
-  createCards("impCards", players, words, oddPlayer, text[currentLanguage].impReveal);
-});
+  if (players < 3) return alert(text[currentLanguage].minPlayers);
 
-// ---------------- MR WHITE ----------------
+  const imposter = Math.floor(Math.random() * players);
+  const word =
+    drawingPrompts[currentLanguage][
+      Math.floor(Math.random() * drawingPrompts[currentLanguage].length)
+    ];
+
+  createCards("impCards", players, i =>
+    i === imposter ? text[currentLanguage].impReveal : `${text[currentLanguage].draw} ${word}`
+  );
+};
+
+// ---------- MR WHITE ----------
 const mwWords = {
-  en:[["Cat 🐱","Cats 🐈"],["House 🏠","Hut 🛖"]],
-  no:[["Katt 🐱","Katter 🐈"],["Hus 🏠","Hytte 🛖"]]
+  en: [["Cat 🐱", "Cats 🐈"], ["House 🏠", "Hut 🛖"], ["Tree 🌳", "Palm 🌴"]],
+  no: [["Katt 🐱", "Katter 🐈"], ["Hus 🏠", "Hytte 🛖"], ["Tre 🌳", "Palme 🌴"]]
 };
-document.getElementById("mwStartBtn").addEventListener("click", () => {
+
+document.getElementById("mwStartBtn").onclick = () => {
   const players = Number(document.getElementById("mwPlayers").value);
-  if(!players || players<3){alert(text[currentLanguage].minPlayers); return;}
-  const oddPlayer = Math.floor(Math.random()*players);
-  const pair = mwWords[currentLanguage][Math.floor(Math.random()*mwWords[currentLanguage].length)];
-  const words = Array(players).fill(pair[0]);
-  createCards("mwCards", players, words, oddPlayer, pair[1]);
-});
+  if (players < 3) return alert(text[currentLanguage].minPlayers);
 
-// ---------------- QUESTION SPY ----------------
+  const odd = Math.floor(Math.random() * players);
+  const pair =
+    mwWords[currentLanguage][
+      Math.floor(Math.random() * mwWords[currentLanguage].length)
+    ];
+
+  createCards("mwCards", players, i =>
+    i === odd ? pair[1] : pair[0]
+  );
+};
+
+// ---------- QUESTION SPY ----------
 const qsPairs = {
-  en:[["What's totally overrated?","What's totally underrated?"],["Least favorite food?","Most favorite food?"]],
-  no:[["Hva er helt overvurdert?","Hva er helt undervurdert?"],["Mest mislikte mat?","Favorittmat?"]]
+  en: [
+    ["What's something overrated?", "What's something underrated?"],
+    ["Least favorite food?", "Favorite food?"]
+  ],
+  no: [
+    ["Hva er overvurdert?", "Hva er undervurdert?"],
+    ["Favorittmat du hater?", "Favorittmat du elsker?"]
+  ]
 };
-document.getElementById("qsStartBtn").addEventListener("click", () => {
-  const players = Number(document.getElementById("qsPlayers").value);
-  if(!players || players<3){alert(text[currentLanguage].minPlayers); return;}
-  const oddPlayer = Math.floor(Math.random()*players);
-  const pair = qsPairs[currentLanguage][Math.floor(Math.random()*qsPairs[currentLanguage].length)];
-  const words = Array(players).fill(pair[0]);
-  createCards("qsCards", players, words, oddPlayer, pair[1]);
-});
 
-// ---------------- PSYCHOLOGIST ----------------
-const psychRules = {
-  en:["Cross legs when lying","Each answer begins with next letter","Everyone thinks they are the person to their right"],
-  no:["Kryss beina når du lyver","Hvert svar begynner med neste bokstav","Alle tror de er personen til høyre"]
+document.getElementById("qsStartBtn").onclick = () => {
+  const players = Number(document.getElementById("qsPlayers").value);
+  if (players < 3) return alert(text[currentLanguage].minPlayers);
+
+  const odd = Math.floor(Math.random() * players);
+  const pair =
+    qsPairs[currentLanguage][
+      Math.floor(Math.random() * qsPairs[currentLanguage].length)
+    ];
+
+  createCards("qsCards", players, i =>
+    i === odd ? pair[1] : pair[0]
+  );
 };
-document.getElementById("psychStartBtn").addEventListener("click", () => {
+
+// ---------- PSYCHOLOGIST ----------
+const psychRules = {
+  en: [
+    "Everyone crosses their legs when lying",
+    "Each answer starts with the next letter of the alphabet",
+    "Everyone thinks they are royalty"
+  ],
+  no: [
+    "Alle krysser beina når de lyver",
+    "Hvert svar starter med neste bokstav i alfabetet",
+    "Alle tror de er kongelige"
+  ]
+};
+
+document.getElementById("psychStartBtn").onclick = () => {
   const players = Number(document.getElementById("psychPlayers").value);
-  if(!players || players<3){alert(text[currentLanguage].minPlayers); return;}
-  const oddPlayer = Math.floor(Math.random()*players);
-  const rule = psychRules[currentLanguage][Math.floor(Math.random()*psychRules[currentLanguage].length)];
-  const words = Array(players).fill(rule);
-  createCards("psychCards", players, words, oddPlayer, text[currentLanguage].psychReveal);
-});
+  if (players < 3) return alert(text[currentLanguage].minPlayers);
+
+  const psych = Math.floor(Math.random() * players);
+  const rule =
+    psychRules[currentLanguage][
+      Math.floor(Math.random() * psychRules[currentLanguage].length)
+    ];
+
+  createCards("psychCards", players, i =>
+    i === psych ? text[currentLanguage].psychReveal : rule
+  );
+};
 
