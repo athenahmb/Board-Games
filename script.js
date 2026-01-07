@@ -1,74 +1,3 @@
-// ---------- LANGUAGE ----------
-let currentLanguage = "en";
-
-const text = {
-  en: {
-    title: "Party Games 🎉",
-    charades: "Charades 🎭",
-    spy: "Spy Game 🕵️",
-    imposter: "Imposter Drawing 🎨",
-    newWord: "New word ✨",
-    start: "Start game",
-    tap: "Tap to reveal 👀",
-    spyReveal: "You are the SPY 😳",
-    impReveal: "You are the IMPOSTER 😈",
-    discuss: "Game ready! Discuss 😈",
-    draw: "Draw:",
-    minPlayers: "At least 3 players babes 💖"
-  },
-  no: {
-    title: "Selskapsspill 🎉",
-    charades: "Charades 🎭",
-    spy: "Spion 🕵️",
-    imposter: "Impostor-tegning 🎨",
-    newWord: "Nytt ord ✨",
-    start: "Start spill",
-    tap: "Trykk for å se 👀",
-    spyReveal: "Du er SPIONEN 😳",
-    impReveal: "Du er IMPOSTOREN 😈",
-    discuss: "Spillet er klart! Diskuter 😈",
-    draw: "Tegn:",
-    minPlayers: "Minst 3 spillere 💕"
-  }
-};
-
-function setLanguage(lang) {
-  currentLanguage = lang;
-  localStorage.setItem("lang", lang);
-
-  document.getElementById("title").textContent = text[lang].title;
-  document.getElementById("charadesTitle").textContent = text[lang].charades;
-  document.getElementById("spyTitle").textContent = text[lang].spy;
-  document.getElementById("impTitle").textContent = text[lang].imposter;
-  document.getElementById("charadesBtn").textContent = text[lang].newWord;
-  document.getElementById("spyStartBtn").textContent = text[lang].start;
-  document.getElementById("impStartBtn").textContent = text[lang].start;
-}
-
-const savedLang = localStorage.getItem("lang");
-if (savedLang) setLanguage(savedLang);
-else setLanguage("en");
-
-// ---------- GENERAL ----------
-function showGame(id) {
-  document.querySelectorAll(".game").forEach(g => g.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-}
-
-// ---------- CHARADES ----------
-const charadesWords = [
-  "Brushing teeth",
-  "Dancing",
-  "Harry Potter",
-  "Swimming",
-  "Cat stuck in a tree"
-];
-
-function newCharadesWord() {
-  const word = charadesWords[Math.floor(Math.random() * charadesWords.length)];
-  document.getElementById("charadesWord").textContent = word;
-}
-
 // ---------- SPY ----------
 const spyLocations = [
   "Beach 🏖️",
@@ -93,12 +22,16 @@ function startSpy() {
   spyImposter = Math.floor(Math.random() * players);
   spyWord = spyLocations[Math.floor(Math.random() * spyLocations.length)];
 
-  document.getElementById("spyInfo").textContent = "Player 1";
+  // reset display
+  document.getElementById("spyInfo").textContent = `Player 1`;
   document.getElementById("spyWord").textContent = text[currentLanguage].tap;
 }
 
 function nextSpyPlayer() {
   const players = Number(document.getElementById("spyPlayers").value);
+
+  // hide previous word immediately
+  document.getElementById("spyWord").textContent = text[currentLanguage].tap;
 
   if (spyPlayer >= players) {
     document.getElementById("spyInfo").textContent = text[currentLanguage].discuss;
@@ -107,10 +40,13 @@ function nextSpyPlayer() {
   }
 
   document.getElementById("spyInfo").textContent = `Player ${spyPlayer + 1}`;
-  document.getElementById("spyWord").textContent =
-    spyPlayer === spyImposter
-      ? text[currentLanguage].spyReveal
-      : spyWord;
+
+  // reveal word when tapped
+  const spyWordEl = document.getElementById("spyWord");
+  spyWordEl.onclick = function () {
+    spyWordEl.textContent =
+      spyPlayer === spyImposter ? text[currentLanguage].spyReveal : spyWord;
+  };
 
   spyPlayer++;
 }
@@ -139,12 +75,16 @@ function startImposter() {
   impImposter = Math.floor(Math.random() * players);
   impWord = drawingPrompts[Math.floor(Math.random() * drawingPrompts.length)];
 
-  document.getElementById("impInfo").textContent = "Player 1";
+  // reset display
+  document.getElementById("impInfo").textContent = `Player 1`;
   document.getElementById("impWord").textContent = text[currentLanguage].tap;
 }
 
 function nextImpPlayer() {
   const players = Number(document.getElementById("impPlayers").value);
+
+  // hide previous word immediately
+  document.getElementById("impWord").textContent = text[currentLanguage].tap;
 
   if (impPlayer >= players) {
     document.getElementById("impInfo").textContent = text[currentLanguage].discuss;
@@ -153,10 +93,13 @@ function nextImpPlayer() {
   }
 
   document.getElementById("impInfo").textContent = `Player ${impPlayer + 1}`;
-  document.getElementById("impWord").textContent =
-    impPlayer === impImposter
-      ? text[currentLanguage].impReveal
-      : `${text[currentLanguage].draw} ${impWord}`;
+
+  // reveal word when tapped
+  const impWordEl = document.getElementById("impWord");
+  impWordEl.onclick = function () {
+    impWordEl.textContent =
+      impPlayer === impImposter ? text[currentLanguage].impReveal : `${text[currentLanguage].draw} ${impWord}`;
+  };
 
   impPlayer++;
 }
