@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Party Games</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Party Games 🎉</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,7 +27,7 @@
   </div>
 
   <!-- CHARADES -->
-  <div id="charades" class="game">
+  <div id="charades" class="game hidden">
     <h2 id="charadesTitle">Charades 🎭</h2>
     <p id="charadesWord">Tap for a word!</p>
     <button id="charadesBtn" onclick="newCharadesWord()">New word ✨</button>
@@ -37,50 +37,50 @@
   <div id="spy" class="game hidden">
     <h2 id="spyTitle">Spy Game 🕵️</h2>
     <input type="number" id="spyPlayers" placeholder="Number of players">
-    <button id="spyStartBtn" onclick="startSpy()">Start game</button>
+    <button id="spyStartBtn">Start game</button>
     <p id="spyInfo"></p>
     <p id="spyWord">Tap to reveal 👀</p>
-    <button onclick="nextSpyPlayer()">Next</button>
+    <button id="spyNextBtn">Next</button>
   </div>
 
   <!-- IMPOSTER -->
   <div id="imposter" class="game hidden">
-    <h2 id="impTitle">Imposter Artist 🎨</h2>
+    <h2 id="impTitle">Imposter Drawing 🎨</h2>
     <input type="number" id="impPlayers" placeholder="Number of players">
-    <button id="impStartBtn" onclick="startImposter()">Start game</button>
+    <button id="impStartBtn">Start game</button>
     <p id="impInfo"></p>
     <p id="impWord">Tap to reveal 👀</p>
-    <button onclick="nextImpPlayer()">Next</button>
+    <button id="impNextBtn">Next</button>
   </div>
 
   <!-- MR WHITE -->
   <div id="mrwhite" class="game hidden">
     <h2 id="mrwhiteTitle">Mr White 🕵️‍♂️</h2>
     <input type="number" id="mwPlayers" placeholder="Number of players">
-    <button id="mwStartBtn" onclick="startMrWhite()">Start game</button>
+    <button id="mwStartBtn">Start game</button>
     <p id="mwInfo"></p>
     <p id="mwWord">Tap to reveal 👀</p>
-    <button onclick="nextMwPlayer()">Next</button>
+    <button id="mwNextBtn">Next</button>
   </div>
 
   <!-- QUESTION SPY -->
   <div id="questionSpy" class="game hidden">
     <h2 id="qsTitle">Question Spy ❓</h2>
     <input type="number" id="qsPlayers" placeholder="Number of players">
-    <button id="qsStartBtn" onclick="startQuestionSpy()">Start game</button>
+    <button id="qsStartBtn">Start game</button>
     <p id="qsInfo"></p>
     <p id="qsWord">Tap to reveal 👀</p>
-    <button onclick="nextQsPlayer()">Next</button>
+    <button id="qsNextBtn">Next</button>
   </div>
 
   <!-- PSYCHOLOGIST -->
   <div id="psychologist" class="game hidden">
     <h2 id="psychTitle">The Psychologist 🧠</h2>
     <input type="number" id="psychPlayers" placeholder="Number of players">
-    <button id="psychStartBtn" onclick="startPsychologist()">Start game</button>
+    <button id="psychStartBtn">Start game</button>
     <p id="psychInfo"></p>
     <p id="psychRule">Tap to reveal 👀</p>
-    <button onclick="nextPsychPlayer()">Next</button>
+    <button id="psychNextBtn">Next</button>
   </div>
 
   <script src="script.js"></script>
