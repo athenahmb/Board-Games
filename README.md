@@ -3,7 +3,7 @@ General instruction: Pass around a phone with the website open. Each player taps
 
 How to play each game:
 
-Charades //
+Charades /  
 Divide the group into two teams. Get a 1-2 minute timer ready. Each group takes turns. One person from the first group gets a word and the rest of their group has to guess the word just from what the person acts out. No sounds allowed. Repeat with the second group and do as many rounds as you want, keeping track of the score.
 
 Spy
